@@ -42,6 +42,5 @@ Entramos en `http://localhost:8069` y crear nueva base de datos.
 
 
 
-<img width="1268" height="920" alt="image" src="https://github.com/user-attachments/assets/19d21172-f9a3-40fb-b5df-749bb59c1b63" />
-
+http://localhost:8069/odoo/apps
 
