@@ -6,27 +6,10 @@ Este módulo permite gestionar pacientes, médicos y atenciones en un hospital.
 <img width="605" height="556" alt="image" src="https://github.com/user-attachments/assets/3e6dd8f1-71dd-4851-8a4d-4bd6b9e4eb53" />
 
 ## Manifest.py:
-{
-    'name': "Gestión de Hospital",
-    'summary': "Módulo para administrar pacientes, médicos y sus diagnósticos",
-    'version': '1.0',
-    'author': "Adrian",
-    'category': 'Healthcare',
-    'depends': ['base'],
-    'data': [
-        'security/ir.model.access.csv',
-        'views/hospital_views.xml',
-    ],
-    'demo': [
-        'data/hospital-demo.xml',
-    ],
-    'installable': True,
-    'application': True,
-}
+<img width="903" height="500" alt="image" src="https://github.com/user-attachments/assets/6533af62-4b48-4557-81f6-d345f885d5ad" />
 
 
  ## hospital-views.xml:
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="view_paciente_tree" model="ir.ui.view">
         <field name="name">hospital.paciente.tree</field>
@@ -90,34 +73,8 @@ Este módulo permite gestionar pacientes, médicos y atenciones en un hospital.
 </odoo>
 
  ## Models.py: 
-# -*- coding: utf-8 -*-
-from odoo import models, fields, api
 
-class HospitalPaciente(models.Model):
-    _name = 'hospital.paciente'
-    _description = 'Paciente del Hospital'
-
-    name = fields.Char(string='Nombre y Apellidos', required=True)
-    sintomas = fields.Text(string='Síntomas')
-    diagnostico_ids = fields.One2many('hospital.diagnostico', 'paciente_id', string='Historial')
-
-class HospitalMedico(models.Model):
-    _name = 'hospital.medico'
-    _description = 'Médico del Hospital'
-
-    name = fields.Char(string='Nombre y Apellidos', required=True)
-    num_colegiado = fields.Char(string='Nº Colegiado', required=True)
-    diagnostico_ids = fields.One2many('hospital.diagnostico', 'medico_id', string='Citas Atendidas')
-
-class HospitalDiagnostico(models.Model):
-    _name = 'hospital.diagnostico'
-    _description = 'Diagnóstico Médico'
-
-    paciente_id = fields.Many2one('hospital.paciente', string='Paciente', required=True)
-    medico_id = fields.Many2one('hospital.medico', string='Médico', required=True)
-    fecha = fields.Date(string='Fecha', default=fields.Date.context_today)
-    diagnostico = fields.Text(string='Diagnóstico', required=True)
-
+<img width="901" height="802" alt="image" src="https://github.com/user-attachments/assets/114a834f-bafb-4f9f-a046-b103881e7225" />
 
 
 ### El .yml es e mismo q otras practicas.
