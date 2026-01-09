@@ -2,36 +2,134 @@
 
 Este módulo permite gestionar pacientes, médicos y atenciones en un hospital.
 
-## Preparar entorno
-Creamos todo el entorno de carpetas necesarias como el .yml, los archivos paciente.py, medico.py...etc, los addoons, conf, todos los .xml, etc:
+## Preparar entorno (archivos y estructura)
+<img width="605" height="556" alt="image" src="https://github.com/user-attachments/assets/3e6dd8f1-71dd-4851-8a4d-4bd6b9e4eb53" />
 
-<img width="568" height="520" alt="image" src="https://github.com/user-attachments/assets/aae5d386-eb7a-4662-bac9-c112cecfb585" />
-
-
-## Crear la base de datos
-Entramos en `http://localhost:8069` y crear nueva base de datos.
-<img width="1268" height="920" alt="image" src="https://github.com/user-attachments/assets/19d21172-f9a3-40fb-b5df-749bb59c1b63" />
-
-## Crear módulo Hospital
-
-- Carpeta: `addons/hospital`.
-- Archivos base: `__manifest__.py`, `__init__.py`.
-- Subcarpeta `models` con `__init__.py`.
-- Crear modelos: `paciente.py`, `medico.py`, `atencion.py`.
-
-
-## Crear vistas
-- Crear XML en `views/` para pacientes, médicos y atenciones.
-- Definir formularios y listas.
-- Enlazar con el módulo desde `__manifest__.py`.
-
-
-## Instalar módulo desde Odoo
+## Manifest.py:
+{
+    'name': "Gestión de Hospital",
+    'summary': "Módulo para administrar pacientes, médicos y sus diagnósticos",
+    'version': '1.0',
+    'author': "Adrian",
+    'category': 'Healthcare',
+    'depends': ['base'],
+    'data': [
+        'security/ir.model.access.csv',
+        'views/hospital_views.xml',
+    ],
+    'demo': [
+        'data/hospital-demo.xml',
+    ],
+    'installable': True,
+    'application': True,
+}
 
 
-## 8. Probar funcionalidad
+ ## hospital-views.xml:
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_paciente_tree" model="ir.ui.view">
+        <field name="name">hospital.paciente.tree</field>
+        <field name="model">hospital.paciente</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="sintomas"/>
+            </list>
+        </field>
+    </record>
 
-.
+    <record id="view_paciente_form" model="ir.ui.view">
+        <field name="name">hospital.paciente.form</field>
+        <field name="model">hospital.paciente</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="sintomas"/>
+                    </group>
+                    <notebook>
+                        <page string="Historial de Diagnósticos">
+                            <field name="diagnostico_ids">
+                                <list>
+                                    <field name="fecha"/>
+                                    <field name="medico_id"/>
+                                    <field name="diagnostico"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pacientes" model="ir.actions.act_window">
+        <field name="name">Pacientes</field>
+        <field name="res_model">hospital.paciente</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_medicos" model="ir.actions.act_window">
+        <field name="name">Médicos</field>
+        <field name="res_model">hospital.medico</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_diagnosticos" model="ir.actions.act_window">
+        <field name="name">Diagnósticos</field>
+        <field name="res_model">hospital.diagnostico</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_hospital_root" name="Hospital" sequence="10"/>
+    <menuitem id="menu_pacientes" name="Pacientes" parent="menu_hospital_root" action="action_pacientes"/>
+    <menuitem id="menu_medicos" name="Médicos" parent="menu_hospital_root" action="action_medicos"/>
+    <menuitem id="menu_diagnosticos" name="Diagnósticos" parent="menu_hospital_root" action="action_diagnosticos"/>
+</odoo>
+
+ ## Models.py: 
+# -*- coding: utf-8 -*-
+from odoo import models, fields, api
+
+class HospitalPaciente(models.Model):
+    _name = 'hospital.paciente'
+    _description = 'Paciente del Hospital'
+
+    name = fields.Char(string='Nombre y Apellidos', required=True)
+    sintomas = fields.Text(string='Síntomas')
+    diagnostico_ids = fields.One2many('hospital.diagnostico', 'paciente_id', string='Historial')
+
+class HospitalMedico(models.Model):
+    _name = 'hospital.medico'
+    _description = 'Médico del Hospital'
+
+    name = fields.Char(string='Nombre y Apellidos', required=True)
+    num_colegiado = fields.Char(string='Nº Colegiado', required=True)
+    diagnostico_ids = fields.One2many('hospital.diagnostico', 'medico_id', string='Citas Atendidas')
+
+class HospitalDiagnostico(models.Model):
+    _name = 'hospital.diagnostico'
+    _description = 'Diagnóstico Médico'
+
+    paciente_id = fields.Many2one('hospital.paciente', string='Paciente', required=True)
+    medico_id = fields.Many2one('hospital.medico', string='Médico', required=True)
+    fecha = fields.Date(string='Fecha', default=fields.Date.context_today)
+    diagnostico = fields.Text(string='Diagnóstico', required=True)
+
+
+
+### El .yml es e mismo q otras practicas.
+
+### Ahora vamos a la BD y activamos el modulos buscando Gestion de Hospital:
+<img width="1061" height="656" alt="image" src="https://github.com/user-attachments/assets/40ae9a5c-2d88-445d-8bf0-0789ac5afd49" />
+
+<img width="1918" height="426" alt="image" src="https://github.com/user-attachments/assets/9b526390-2411-4d4f-a87b-3774577d58d4" />
+
+<img width="1915" height="493" alt="image" src="https://github.com/user-attachments/assets/6291342e-7012-45e2-93a0-7a1ecf9d5ecb" />
+
+
 
 
 
